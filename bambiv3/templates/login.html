@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+{% block content %}
+  
+<style>
+header, footer {
+   display: flex;
+   flex-direction: row;
+ }
+ header .profile-thumbnail {
+   width: 55px;
+   height: 55px;
+   border-radius: 50%;
+ }
+ header .profile-name {
+   display: flex;
+   flex-direction:column;
+   margin-left: 10px;
+ }
+header h3, header h4 {
+   display: flex;
+   margin: 0;
+ }
+ #inner p {
+   margin-bottom: 10px;
+   font-size: 20px;
+ }
+ #inner hr {
+   margin: 20px 0;
+   border-style: solid;
+   opacity: 0.1;
+   color:#F9E9C8;
+ }
+ .post{
+   border: 2px solid #F9E9C8;
+   padding: 10px;
+ }
+</style>  
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3 d-none d-lg-block">
+        <!-- User info , photos -->
+      <!--<header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;">
+        <img src="{{ url_for('static', filename='profile_pics/' + 'logo.png') }}" alt="logo" class="profile-thumbnail">
+        <div class="profile-name">
+          <h3 class="logo">BAMBI</h3>
+          <small>&copy 2019</small>
+        </div>
+      </header>-->
+    </div>
+
+    <div class="col-lg-6" style="text-align: center">
+      <div class="post">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category , message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+              {% endfor %}
+          {% endif %}
+          {% endwith %}
+        <div id="inner">
+         <div class="content-section">
+          <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        <h1 class="display-4" style="text-align:left;padding-bottom:5px;">Sign In.</h1>
+      <!--<img src="{{ url_for('static', filename='profile_pics/' + 'logo.png') }}" class="mb-3" style="width:120px;height:120px;border-radius: 5px;">-->
+     <div class="form-group">
+        {% if form.username.errors %}
+        {{ form.username(placeholder="username", class="form-control form-control is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.username.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.username(placeholder="username", class="form-control form-control") }}
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {% if form.password.errors %}
+        {{ form.password(placeholder="password", class="form-control form-control is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.password.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.password(placeholder="password", class="form-control form-control") }}
+        {% endif %}
+      </div>
+
+        <div class="form-check">
+          {{ form.remember(class="form-check-input") }}
+          {{ form.remember.label(class="form-check-label") }}
+        </div>
+
+        </div>
+            </fieldset>
+            <div class="form-group">
+
+        {{ form.submit(class="btn btn-outline-warning", placeholder="Login") }}
+
+      </div>
+
+  </form>
+
+      <small class="text-muted"><a href="{{ url_for('reset_request') }}">Forgot Password?</a></small> <span>  </span>
+      <small class="text-muted">Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></small>
+
+        </div>
+    </div>
+    <br>
+     <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;">
+        <img src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo" class="profile-thumbnail">
+        <div class="profile-name">
+          <h3 class="logo">BAMBI</h3>
+          <small id="year"></small>
+        </div>
+      </header>
+    </div>
+
+
+{% endblock content %}

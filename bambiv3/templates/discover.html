@@ -1,0 +1,381 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<style>
+header, footer {
+   display: flex;
+   flex-direction: row;
+ }
+ header .profile-thumbnail {
+   width: 55px;
+   height: 55px;
+   border-radius: 50%;
+ }
+ header .profile-name {
+   display: flex;
+   flex-direction:column;
+   margin-left: 10px;
+ }
+ header .follow-btn {
+   display: flex;
+   margin: 0 0 0 auto;
+ }
+ header .follow-btn button {
+   border: 0;
+   border-radius: 3px;
+   padding: 5px;
+ }
+ header h3, header h4 {
+   display: flex;
+   margin: 0;
+ }
+ #inner p {
+   margin-bottom: 10px;
+   font-size: 16px;
+   color:#f8f8f2;
+ }
+ #inner hr {
+   margin: 20px 0;
+   border-style: solid;
+   opacity: 0.1;
+   color:#F9E9C8;
+ }
+ footer .stats {
+   display: flex;
+   font-size: 15px;
+ }
+ footer .stats strong {
+   font-size: 18px;
+ }
+ footer .stats .likes {
+   margin-left: 10px;
+ }
+ footer .cta {
+   margin-left: auto;
+ }
+ footer .cta button {
+   border: 0;
+   background: transparent;
+ }
+ .post{
+   border: 1px solid #a0998a;
+   padding: 10px;
+   border-radius: 7px;
+ }
+ .post_btn{
+  background-color : #000;
+  color: #F9E9C8;
+  padding: 10px 20px;
+  border:none;
+  outline:none;
+  border:2px solid #F9E9C8;
+  padding: 2px;
+  border-radius: 50%;
+  height:70px;
+  width:70px;
+}
+#new_post{
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+}
+.liked {
+  color: red;
+}
+.love{
+  cursor: pointer;
+}
+.subtle{
+  background-color: #000;
+  border: 1px solid #F9E9C8;
+}
+.subtle:focus{
+  background-color: #000;
+  outline: none;
+  border: 1px solid #F9E9C8;
+  color: #fff;
+}
+.menu a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+.menu a:hover {
+  color: #000;
+}
+.cardi{
+  background: #000;
+  overflow-x: auto;
+  display: flex;
+  flex-wrap: nowrap;
+}
+.cardi::-webkit-scrollbar {
+  display: none;
+}
+.scroll img{
+  width:100%;
+  height:100%;
+  border-radius:10px;
+}
+.card--content {
+  background: linear-gradient(#ffcccc,#ccffff);
+  width: 300px;
+  height: 80%;
+  margin: 5px;
+  border-radius:10px;
+  border:1px solid #fff;
+  border-radius:10px;
+  padding:1px;
+  flex: 0 0 auto;
+}
+.card--content h5{
+    background: #F9E9C8;
+    color:#000;
+    padding:5px;
+    text-align:center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 10px;
+    margin: 5px;
+  }
+
+</style>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3 d-none d-lg-block">
+      <!-- User info , photos -->
+      {% if current_user.is_authenticated %}
+      <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;cursor:pointer;" data-toggle="modal" data-target="#profile" title="🍌: Click to Preview Your Profile Info">
+        <img src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" alt="default profile" class="profile-thumbnail">
+        <div class="profile-name">
+          <h3>{{current_user.username}}</h3>
+          <small>@{{current_user.email.split("@")[0] | lower}}</small>
+        </div>
+      </header>
+      <br>
+
+      <!-- Profile Modal -->
+      <div class="modal fade" id="profile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>-->
+          <div class="modal-body">
+            <div class="card" style="color:#000;text-align:center;">
+            <img class="card-img-top" src="{{ image_file }}" alt="Card image cap" style="height:250px;">
+            <div class="card-body">
+              <h5 class="card-title">{{current_user.username}}</h5>
+                My name is {{current_user.username}} and I study {{current_user.department}} at Near East University.
+                I am from {{current_user.country}} and I am {{current_user.age}} years old. 
+            </div>
+            <div class="card-footer">
+              My hobbies include {{current_user.hobby}}.My Student number is {{current_user.student_number}} and my email is {{current_user.email}}
+            <div>
+            </div>
+          </div>
+          </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary"><a href="{{ url_for('account') }}" style="color:#F9E9C8;">Edit</a></button>
+            <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card about" style="color:#fff;background:#000;text-align:left;border:1px solid #F9E9C8;">
+    <div class="card-body">
+      <p> 🎓 Studies at <span>Near East University</span></p>
+      <p> 🏅 Majors in <span>{{current_user.department}}</span></p>
+      <p> ☂ Student Number: <span>{{current_user.student_number}}</span></p>
+      <p> 🙊 Is <span>{{current_user.age}}</span> years old</p>
+      <p> 🌍 From <span>{{current_user.country}}</span></p>
+      <p> 🚖 Lives in <span>Nicosia, Cyprus</span></p>
+      <p> 💎 Interested in <span>{{current_user.hobby}}</span></p>
+      <a class="btn btn-sm btn-primary" href="{{ url_for('account') }}">🍁 edit</a>
+    </div>
+  </div>
+
+  <br>
+
+  <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;" data-toggle="popover" data-content="🍌: Click to know more about Bambi">
+    <a href="{{url_for('about')}}" target="_blank" style="color: #F9E9C8;text-decoration: none;">
+    <img src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo" class="profile-thumbnail">
+    <div class="profile-name">
+      <h3 class="logo">BAMBI</h3>
+      <small id="year"></small>
+    </a>
+    </div>
+  </header>
+  {% else %}
+  <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;">
+    <img src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo" class="profile-thumbnail">
+    <div class="profile-name">
+      <h3 class="logo">Hello Friend!</h3>
+      <small>how about signing in?</small>
+    </div>
+  </header>
+  <br>
+     <div class="menu" style="border:1px solid #F9E9C8;border-radius: 5px;">
+      <a class="dropdown-item" href="{{ url_for('new_post') }}"> 🍧 Post</a>
+       <a class="dropdown-item" href="{{ url_for('inbox') }}"> 💬 Inbox</a>
+      <a class="dropdown-item" href="{{ url_for('discover') }}"> 🔥 Discover Friends</a>
+      <a class="dropdown-item" href="{{ url_for('explore') }}"> 🔱 Explore</a>
+      <a class="dropdown-item" href="{{ url_for('blog') }}"> 🎬 Blog</a> 
+      <a class="dropdown-item" href="{{ url_for('about') }}"> 👋 About Bambi</a>
+    </div>
+  {% endif %}
+</div>
+
+
+
+    <div class="col-lg-6">
+      <!-- content area -->
+          <h2>Discover New Friends</h2>
+          {% if current_user.is_authenticated %}
+          <section class="cardi scroll">
+            {% for user in users if user != current_user %}
+            <div class="others">
+            <div class="card--content"><a href="{{url_for('user_posts', username=user.username)}}"><img src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}" alt=""></a>
+              <h5 style="font-size:15px;">{{user.username.title()}}<i class="far fa-check-circle"></i>: I'm {{user.age}} from {{user.country}} and I study {{user.department}}. <a href="{{url_for('user_posts', username=user.username)}}" target="_blank">MORE</a></h5>
+            </div>
+            </div>
+            {% endfor %}
+            <div class="other">
+            <div class="card--content"><a href="{{url_for('swipe')}}"><img src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo"></a>
+              <h5 style="font-size:15px;">BAMBI<i class="far fa-check-circle"></i>: Wanna see more friend matches for you? <a href="{{url_for('swipe')}}" target="_blank">Start Swiping!</a></h5>
+            </div>
+            </div>
+          </section>
+          <br>
+          {% endif %}
+          <div style="margin-bottom: 30px;"></div>
+    </div>
+
+
+
+    <div class="col-lg-3 d-none d-lg-block">
+      {% if current_user.is_authenticated %}
+      <!-- notifications and relevant ads -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category , message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <a href="{{ url_for('new_post') }}"  style="color:#000;text-decoration: none">
+      <strong>🍧 Post Something!</strong> Tell your friends what you're up to.</a>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <a href="{{ url_for('discover') }}"  style="color:#000;text-decoration: none">
+      <strong>🔥 Discover Friends!</strong> Swipe left and right on discover to make friends.</a>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="alert alert-dark alert-dismissible fade show" role="alert">
+      <strong>💬 Check your Inbox! </strong>You have Unread Messages
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;cursor:pointer;border-radius:5px;overflow:auto;height:318px;">
+        <h5 style="padding-left: 3px;">Friends - <small><a href="{{url_for('discover')}}" target="_blank">view all</a></small></h5>
+        {% for user in users if user != current_user %}
+        <header>
+        <img src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}" alt="default profile" class="profile-thumbnail">
+        <div class="profile-name">
+          <h3>{{user.username}}</h3>
+          {% if user.country == current_user.country %}
+          <small>From {{user.country}}</small>
+          {% endif %}
+          {% if user.department == current_user.department %}
+          <small>Studies {{user.department}}</small>
+          {% endif %}
+        </div>
+        <div class="follow-btn">
+            <button style="height:40px;background:#000;color:#F9E9C8;"><a href="{{url_for('user_posts', username=user.username)}}"target="_blank">❤</a></button>
+          </div>
+      </header>
+      <br>
+      {% endfor %}
+      </div>
+      <br>
+      <div class="card" style="color:#000;">
+      <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo">
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-ad"></i></h5>
+        <p class="card-text">Tell your friends to sign up to Bambi. We wont offer you any freebies but its worth the while</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted logo">BAMBI</small>
+      </div>
+    </div>
+    <div id="new_post">
+      <button class="post_btn"><a href="{{ url_for('new_post') }}" style="color:#F9E9C8;"><i class="fas fa-feather-alt" style="font-size:30px;"></i></a></button>
+    </div>
+    {% else %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <a href="{{ url_for('new_post') }}"  style="color:#000;text-decoration: none">
+      <strong>🍌 Perks of having a Bambi Account!</strong></a>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <a href="{{ url_for('new_post') }}"  style="color:#000;text-decoration: none">
+      <strong>🍧 Post and View Stories!</strong> See what your friends are up to.</a>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <a href="{{ url_for('swipe') }}"  style="color:#000;text-decoration: none">
+      <strong>🔥 Swipe Friends!</strong> Swipe left and right to make friends.</a>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+      <strong>💬 Check your Inbox! </strong>You could be having Unread Messages
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <div class="card" style="color:#000;">
+      <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo">
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-ad"></i></h5>
+        <p class="card-text">Tell your friends to sign up to Bambi. We wont offer you any freebies but its worth the while</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted logo">BAMBI</small>
+      </div>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
+
+
+{% endblock content %}
