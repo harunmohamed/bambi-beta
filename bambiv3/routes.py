@@ -21,16 +21,19 @@ def layout():
 	users = User.query.all()
 	return render_template('layout.html', users=users)
 
+
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'])
 def home():
 	form = PostForm()
 	if form.validate_on_submit():
-		post = Post(title=form.title.data, content=form.content.data, author=current_user)
-		db.session.add(post)
-		db.session.commit()
-		flash('Your Post Has been Created!', 'success')
-		return redirect(url_for('home'))
+		if form.image.data:
+			picture = save_picture(form.image.data)
+			post = Post(title=form.title.data, content=form.content.data, image=picture, author=current_user)
+			db.session.add(post)
+			db.session.commit()
+			flash('Your Post Has been Created!', 'success')
+			return redirect(url_for('home'))
 	page = request.args.get('page', 1, type=int)
 	posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=50, page=page)
 	users = User.query.all()
@@ -69,6 +72,7 @@ def inbox():
 @app.route('/send_message/<recipient>', methods=['GET', 'POST'])
 @login_required
 def send_message(recipient):
+	recipient = recipient.lower()
 	user = User.query.filter_by(username=recipient).first_or_404()
 	if user == current_user:
 		return redirect(url_for('messages'))
@@ -334,6 +338,7 @@ def user(username):
 @app.route('/follow/<username>')
 @login_required
 def follow(username):
+	username = username.lower()
 	user = User.query.filter_by(username=username).first()
 	if user is None:
 		flash('User {} not found.'.format(username))
@@ -350,6 +355,7 @@ def follow(username):
 @app.route('/unfollow/<username>')
 @login_required
 def unfollow(username):
+	username = username.lower()
 	user = User.query.filter_by(username=username).first()
 	if user is None:
 		flash('User {} not found.'.format(username))
