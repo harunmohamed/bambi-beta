@@ -29,9 +29,9 @@ def home():
 	if form.validate_on_submit():
 		if form.image.data:
 			picture = save_picture(form.image.data)
-			post = Post(title=form.title.data, content=form.content.data, image=picture, author=current_user)
+			post = Post(title=form.title.data, content=form.content.data, image=picture, anonymous=form.anonymous.data, author=current_user)
 		else:
-			post = Post(title=form.title.data, content=form.content.data, author=current_user)
+			post = Post(title=form.title.data, content=form.content.data, anonymous=form.anonymous.data, author=current_user)
 		db.session.add(post)
 		db.session.commit()
 		flash('Your Post Has been Created!', 'success')
@@ -216,13 +216,13 @@ def new_post():
 	if form.validate_on_submit():
 		if form.image.data:
 			picture = save_picture(form.image.data)
-			post = Post(title=form.title.data, content=form.content.data, image=picture, author=current_user)
+			post = Post(title=form.title.data, content=form.content.data, image=picture, anonymous=form.anonymous.data, author=current_user)
 			db.session.add(post)
 			db.session.commit()
 			flash('Your Post Has been Created!', 'success')
 			return redirect(url_for('home'))
 		else:
-			post = Post(title=form.title.data, content=form.content.data, author=current_user)
+			post = Post(title=form.title.data, content=form.content.data, anonymous=form.anonymous.data, author=current_user)
 			db.session.add(post)
 			db.session.commit()
 			flash('Your Post Has been Created!', 'success')

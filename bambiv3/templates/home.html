@@ -6,6 +6,11 @@
 header, footer {
    display: flex;
    flex-direction: row;
+   color:#F9E9C8;
+   background:#191917;
+   border-radius:10px;
+   padding:8px;
+   cursor:pointer;
  }
  header .profile-thumbnail {
    width: 55px;
@@ -59,9 +64,9 @@ header, footer {
    background: transparent;
  }
  .post{
-   border: 1px solid #a0998a;
-   padding: 10px;
-   border-radius: 7px;
+   background:#191917;
+   border-radius:10px;
+   padding:7px;
  }
  .post_btn{
   background-color : #000;
@@ -87,14 +92,14 @@ header, footer {
   cursor: pointer;
 }
 .subtle{
-  background-color: #000;
+  background-color: #070707;
   border: none;
   padding-top: 5px;
   margin-top: 2px;
   margin-left: 10px;
 }
 .subtle:focus{
-  background-color: #000;
+  background-color: #070707;
   outline:0px !important;
   -webkit-appearance:none;
   box-shadow: none !important;
@@ -112,7 +117,7 @@ header, footer {
   color: #000;
 }
 .cardi{
-  background: #000;
+  background: #070707;
   overflow-x: auto;
   display: flex;
   flex-wrap: nowrap;
@@ -144,7 +149,7 @@ header, footer {
     <div class="col-lg-3 d-none d-lg-block">
       <!-- User info , photos -->
       {% if current_user.is_authenticated %}
-      <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;cursor:pointer;" data-toggle="modal" data-target="#profile" title="🍌: Click to Preview Your Profile Info">
+      <header data-toggle="modal" data-target="#profile" title="🍌: Click to Preview Your Profile Info">
         <img src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" alt="default profile" class="profile-thumbnail">
         <div class="profile-name">
           <h3>{{current_user.username}}</h3>
@@ -184,7 +189,7 @@ header, footer {
     </div>
 
 
-    <div class="menu" style="border:1px solid #F9E9C8;border-radius: 5px;">
+    <div class="menu" style="background:#191917;border-radius:10px;">
       <a class="dropdown-item" href="{{ url_for('f_posts') }}"> 🍧 Friend Posts</a>
        <a class="dropdown-item" href="{{ url_for('messages') }}"> 💬 Messages 
         {% set new_messages = current_user.new_messages() %}<span id="message_count" class="badge badge-warning"style="visibility: {% if new_messages %}visible{% else %}hidden {% endif %};">{{ new_messages }}</span></a>
@@ -213,7 +218,7 @@ header, footer {
 
   <br>
 
-  <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;" data-toggle="popover" data-content="🍌: Click to know more about Bambi">
+  <header data-toggle="popover" data-content="🍌: Click to know more about Bambi">
     <a href="{{url_for('about')}}" target="_blank" style="color: #F9E9C8;text-decoration: none;">
     <img src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo" class="profile-thumbnail">
     <div class="profile-name">
@@ -223,7 +228,7 @@ header, footer {
     </div>
   </header>
   {% else %}
-  <header style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;">
+  <header>
     <img src="{{ url_for('static', filename='profile_pics/' + 'logod.png') }}" alt="logo" class="profile-thumbnail">
     <div class="profile-name">
       <h3 class="logo">Hello Friend!</h3>
@@ -231,7 +236,7 @@ header, footer {
     </div>
   </header>
   <br>
-     <div class="menu" style="border:1px solid #F9E9C8;border-radius: 5px;">
+     <div class="menu" style="background:#191917;border-radius:10px">
       <a class="dropdown-item" href="{{ url_for('f_posts') }}"> 🍧 Friend Posts</a>
        <a class="dropdown-item" href="{{ url_for('inbox') }}"> 💬 Inbox</a>
       <a class="dropdown-item" href="{{ url_for('discover') }}"> 🔥 Discover Friends</a>
@@ -296,6 +301,11 @@ header, footer {
                 {% endif %}
               </div>
 
+              <div class="form-check mb-1">
+                {{ form.anonymous(class="form-check-input") }}
+                {{ form.anonymous.label(class="form-check-label") }}
+              </div>
+
                 <div class="form-group">
                   {{ form.submit(class="btn btn-outline-dark",style="border:1px solid #868e96;") }}
                 </div>
@@ -345,14 +355,27 @@ header, footer {
 
    {% for post in posts.items %}
     {% if not post.author.private or current_user == post.author or current_user.is_authenticated %} <!--if current_user.is_following(post.author)-->
-    <div class="post">
-      <header>
+    <div class="post mb-3">
+      <header class="pb-0">
+        {% if not post.anonymous %}
           <img src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}" alt="profile pic" class="profile-thumbnail" data-toggle="popover" data-content="😎 : I am {{post.author.age}} from {{post.author.country}} and I study {{post.author.department}}. I am Interested in {{post.author.hobby}}">
+        {% else %}
+          <img src="{{ url_for('static', filename='profile_pics/' + 'ghost.jpg') }}" alt="profile pic" class="profile-thumbnail">
+        {% endif %}
           <div class="profile-name">
-            <h3 data-toggle="popover"><a href="{{url_for('user_posts', username=post.author.username)}}" style="color:#F9E9C8;">{{post.author.username}}
+            {% if not post.anonymous %}
+
+            <h3 data-toggle="popover"><a href="{{url_for('user_posts', username=post.author.username)}}" style="color:#F9E9C8;">  {{post.author.username}}
              {% if post.author.username in ["harun" , "bambi"] %}<img src="{{ url_for('static', filename='profile_pics/' + 'correct.png') }}" style="width:20px;height:20px;margin-left: -5px;">{% endif %}
            </a></h3>
-            <small>@{{post.author.email.split("@")[0] | lower}}</small>
+           <small>@{{post.author.email.split("@")[0] | lower}}</small>
+
+           {% else %}
+
+           <h3 data-toggle="popover">anonymous</h3>
+           <small>@anonymous</small>
+
+           {% endif %}
           </div>
           <div class="follow-btn">
             {% if current_user.is_authenticated %}
@@ -366,10 +389,10 @@ header, footer {
 
                 {% else %}
                 <div class="dropdown dropleft">
-                <button class="btn btn-dark btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background:#000;">
+                <button class="btn btn-dark btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background:none;">
                   <i class="fas fa-ellipsis-v" style="font-size: 28px;"></i>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background: #000;width: 20px;">
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background:none;width: 20px;">
                   <a class="btn btn-warning btn-sm m-1" href="{{url_for('update_post', post_id=post.id)}}">✏edit</a>
                   <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">🗑️delete</button>
                 </div>
@@ -398,7 +421,7 @@ header, footer {
         </header>
 
         <div id="inner">
-          <p style="text-transform: uppercase;letter-spacing: 2px;text-align: center;margin-top: 4px;background:#F9E9C8;color:#000;"><a href=" {{ url_for('post', post_id=post.id) }} " style="color:#000;">{{post.title}}</a></p>
+          <p  class="mt-1" style="text-transform: uppercase;letter-spacing:2px;text-align:center;background:#F9E9C8;color:#000;"><a href=" {{ url_for('post', post_id=post.id) }} " style="color:#000;text-decoration:none;">{{post.title}}</a></p>
           {% if post.image %}
           <img class="mb-2" src="{{ url_for('static', filename='profile_pics/' + post.image) }}" style="width:100%;height:100%;border-radius:5px;">
           {% endif %}
@@ -411,7 +434,7 @@ header, footer {
           {% if current_user.is_authenticated %}
           <div class="comments mb-2">
             <img src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" class="mb-2"style="width:30px;height:30px;border-radius:50%;">
-            <input type="text" name="comment" placeholder="Join the Conversation" style="background:#000;border:none;border-radius:5px;outline:none;width:85%;height: 35px;padding:10px;color:#F9E9C8;margin-top:5px;">
+            <input type="text" name="comment" placeholder="Join the Conversation" style="background:none;border:none;border-radius:5px;outline:none;width:85%;height: 35px;padding:10px;color:#F9E9C8;margin-top:5px;">
           </div>
           {% endif %}
         </div>
@@ -425,7 +448,6 @@ header, footer {
           </div>
         </footer>
     </div>
-    <br>
     {% endif %}
   {% endfor %}
 
@@ -481,7 +503,7 @@ header, footer {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div style="color:#F9E9C8;border:2px solid #F9E9C8;padding:8px;cursor:pointer;border-radius:5px;overflow:auto;height:318px;">
+      <div style="color:#F9E9C8;background:#191917;padding:7px;cursor:pointer;border-radius:5px;overflow:auto;height:318px;">
         <h5 style="padding-left: 3px;">Friends - <small><a href="{{url_for('discover')}}" target="_blank">view all</a></small></h5>
         {% for user in users if user != current_user %}
         <header>
@@ -496,10 +518,9 @@ header, footer {
           {% endif %}
         </div>
         <div class="follow-btn">
-            <button style="height:40px;background:#000;color:#F9E9C8;"><a href="{{url_for('user_posts', username=user.username)}}"target="_blank">❤</a></button>
+            <button style="height:40px;background:none;color:#F9E9C8;"><a href="{{url_for('user_posts', username=user.username)}}"target="_blank">❤</a></button>
           </div>
       </header>
-      <br>
       {% endfor %}
       </div>
       <br>

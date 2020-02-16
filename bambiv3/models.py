@@ -113,6 +113,7 @@ class Post(db.Model):
 	date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	content = db.Column(db.Text, nullable=False)
 	image = db.Column(db.String(20))
+	anonymous = db.Column(db.Boolean, default=False, nullable=False)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	likes = db.relationship('PostLike', backref='post', lazy='dynamic')
 

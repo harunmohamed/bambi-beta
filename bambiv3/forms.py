@@ -70,6 +70,7 @@ class PostForm(FlaskForm):
 	title = StringField('Title') #validators=[DataRequired()]
 	content = TextAreaField('Content', validators=[DataRequired()])
 	image = FileField('Upload Image', validators=[FileAllowed(['jpg', 'jpeg' , 'png', 'gif'])])
+	anonymous = BooleanField('Post Anonymously?')
 	submit = SubmitField('🛫 Post')
 
 class MessageForm(FlaskForm):
