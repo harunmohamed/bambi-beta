@@ -180,7 +180,7 @@ pycrypto==2.6.1
 pycurl==7.43.0.2
 pyen==2.3
 pyflakes==2.0.0
-Pygments==2.3.1
+Pygments==2.7.4
 pylint==2.2.2
 pylint-django==2.0.15
 pylint-plugin-utils==0.6
