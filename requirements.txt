@@ -117,7 +117,7 @@ link-preview==1.0
 llvmlite==0.26.0
 locket==0.2.0
 lxml==4.5.0
-Mako==1.1.0
+Mako==1.2.2
 Markdown==3.2.1
 MarkupSafe==1.1.1
 matplotlib==3.0.2
